@@ -1,23 +1,21 @@
-import { verifyToken, signToken } from '../utils/jwt'
 import { Request, Response, NextFunction } from 'express'
 import { ErrorHandler } from './errorHandler.middleware'
+import { JwtPayload, verify } from 'jsonwebtoken'
+import { AuthModel } from '../models/auth.model'
 
-export const authMiddleware = async (
+export const validateToken = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.headers['api-token']
+  const { authorization } = req.headers
+  if (!authorization || !authorization.startsWith('Bearer'))
+    return next(new ErrorHandler('Token doesnt exist', 400))
+  const token = authorization.split(' ')[1]
 
-  try {
-    if (!token) throw new ErrorHandler('Token not found', 401)
+  verify(token, <string>process.env.JWT_SECRET, (err, payload) => {
+    if (err) next(new ErrorHandler('Error token', 400))
+  })
 
-    const decoded = verifyToken(token as string)
-
-    if (!decoded) throw new ErrorHandler('Invalid token', 401)
-
-    return decoded
-  } catch (error) {
-    throw new ErrorHandler('Internal error', 500)
-  }
+  next()
 }

@@ -5,9 +5,5 @@ export const signToken = (payload: Object, expiresIn: string) => {
 }
 
 export const verifyToken = (token: string) => {
-  try {
-    return verify(token, <string>process.env.JWT_SECRET)
-  } catch (err) {
-    return null
-  }
+  return verify(token, <string>process.env.JWT_SECRET)
 }

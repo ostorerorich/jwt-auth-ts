@@ -16,11 +16,11 @@ export const errorHandler = (
   next: NextFunction
 ) => {
   if (err instanceof ErrorHandler) {
-    res.status(err.statusCode).json({
+    res.status(err.statusCode || 500).json({
       response: {
         status: 'error',
-        statusCode: err.statusCode,
-        message: err.message,
+        statusCode: err.statusCode || 500,
+        message: err.message || 'Internal Server Error',
       },
     })
   }

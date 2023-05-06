@@ -12,9 +12,10 @@ const app = express()
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+app.use('/auth', AuthRouter)
+
 app.use(errorHandler)
 
-app.use('/auth', AuthRouter)
 app.listen(3000, () => {
   console.log('Server on port 3000')
 })
